@@ -36,3 +36,4 @@ def train(model_gpu, num_epochs,optimizer, loss_fn, train_data_loader, val_data_
             # Evaluate the model's performance on the test dataset
 
     torch.save(model_gpu, path)
+    print("saved model")
