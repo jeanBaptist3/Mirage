@@ -63,12 +63,15 @@ def create_data(generated_blocks, prediction_blocks, bytes_per_token, train_size
         nonce_bits = ''.join(format(byte, '08b') for byte in nonce)
         nonces.append(nonce)
         pretokenized_input = binary_to_hex(ciphetext_bits[:1024])
-        pretokenized_target = ciphetext_bits[1024:]
+        pretokenized_target = binary_to_hex(ciphetext_bits[1024:])
         nonce_bits = binary_to_hex(nonce_bits)
 
 
         for j in range(1, gen_blocks * 64 //bytes_per_token):
             pretokenized_input = pretokenized_input[:gen_blocks*128 - j * 2*bytes_per_token]+ "," + pretokenized_input[gen_blocks*128 - j *2*bytes_per_token:]
+
+        for j in range(1, prediction_blocks*64 //bytes_per_token):
+            pretokenized_target = pretokenized_target[:prediction_blocks*128-j * 2 * bytes_per_token]+ "," + pretokenized_target[prediction_blocks*128-j * 2 * bytes_per_token:]
 
         for y in range(0,8//bytes_per_token) :
             nonce_bits = nonce_bits[:16-(y+1)*2*bytes_per_token] + ',' + nonce_bits[16-(y+1)*2*bytes_per_token:]

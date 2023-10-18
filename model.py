@@ -128,7 +128,7 @@ class EncoderLayer(nn.Module):
 
 
 class TransformerModel(nn.Module):
-    def __init__(self, embedding_dim, max_input_length,max_target_length, num_encoder_layers, num_decoder_layers,batch_size,output_dim,nhead):
+    def __init__(self, embedding_dim, max_input_length,max_target_length, num_encoder_layers, num_decoder_layers, batch_size, output_dim, nhead):
         super(TransformerModel, self).__init__()
         self.input_position_encoder = PositionalEncoding(embedding_dim, max_input_length)
         self.target_position_encoder = PositionalEncoding(embedding_dim, max_target_length)

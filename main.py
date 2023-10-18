@@ -22,15 +22,13 @@ def main() :
     max_input_length = 136  # Input Len
     max_t_length = 64  # target len
     num_encoder_layers = 2  # Number of encoder layers
-    num_decoder_layers = 2
     output_dim = 8
     nhead = 8  # Number of attention heads
     num_decoder_layers = 2
     num_epochs = 10
     path_model = "model/mirage.pth "
 
-    model_gpu = model.TransformerModel(embedding_dim, max_input_length, max_t_length, num_encoder_layers,
-                                       num_decoder_layers, batch_size, output_dim, nhead)
+    model_gpu = model.TransformerModel(embedding_dim, max_input_length, max_t_length, num_encoder_layers,num_decoder_layers, batch_size, output_dim, nhead)
     print("created model")
     loss_fn = nn.BCELoss()  # Use BCELoss for binary sequence prediction
     optimizer = optim.Adam(model_gpu.parameters(), lr=0.001)  # Adjust the learning rate
