@@ -11,22 +11,22 @@ def main() :
     This section contains the Variables you can choose to train the model with:
     :return:
     """
-    train_size = 100000
-    test_size = 10000
-    val_size = 10000
-    batch_size = 32
-    generated_blocks = 2
+    train_size = 10000
+    test_size = 1000
+    val_size = 1000
+    batch_size = 64
+    generated_blocks = 3
     prediction_blocks = 1
     bytes_per_token = 1
     embedding_dim = 8  # embedding dimension
-    max_input_length = 136  # Input Len
-    max_t_length = 64  # target len
+    max_input_length = generated_blocks*64 + 8  # Input Len
+    max_t_length = prediction_blocks*64  # target len
     num_encoder_layers = 2  # Number of encoder layers
     output_dim = 8
     nhead = 8  # Number of attention heads
     num_decoder_layers = 2
     num_epochs = 10
-    path_model = "model/mirage.pth "
+    path_model = "model/mirageBIG.pth "
 
     model_gpu = model.TransformerModel(embedding_dim, max_input_length, max_t_length, num_encoder_layers,num_decoder_layers, batch_size, output_dim, nhead)
     print("created model")
@@ -45,7 +45,5 @@ def main() :
 
     trainer.train(model_gpu,num_epochs,optimizer,loss_fn,train_data_loader,val_data_loader,test_data_loader,path_model)
 if __name__ =="__main__":
-    checkpoint = "google/flan-t5-small"
-
     main()
 
