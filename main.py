@@ -41,7 +41,7 @@ def main() :
     dataCreation.create_data(generated_blocks=generated_blocks,prediction_blocks=prediction_blocks,bytes_per_token=bytes_per_token,train_size=train_size,test_size=test_size,val_size=val_size)
     print("Data Creation Complete")
     dataframe = dataLoader.load_csv(path="data/data_dump.csv")
-    tensor_to_token, token_to_tensor = dataLoader.create_tensor_dict()
+    token_to_tensor, tensor_to_token = dataLoader.create_tensor_dict()
     train_data_loader,val_data_loader,test_data_loader = dataLoader.create_data_loader(dataframe=dataframe,train_ratio=train_size/full_size,val_ratio=val_size/full_size,token_to_tensor=token_to_tensor,b_size=batch_size)
     print("created dataset and dataloader")
 

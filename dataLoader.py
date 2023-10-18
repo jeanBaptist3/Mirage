@@ -37,7 +37,7 @@ def create_data_loader(dataframe,train_ratio,val_ratio,token_to_tensor,b_size):
     X = dataframe[['block_and_nonce']]  # inputs
     y = dataframe[['next_block']]  # targets
 
-    if (train_ratio +val_ratio > 1) :
+    if train_ratio +val_ratio > 1 :
         print("falsche Angaben der Verhältnisse")
         return
     # calculating index for training, validation and testing
