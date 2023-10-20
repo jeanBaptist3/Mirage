@@ -11,7 +11,7 @@ def main() :
     This section contains the Variables you can choose to train the model with:
     :return:
     """
-    train_size = 10000
+    train_size = 50000
     test_size = 1000
     val_size = 1000
     batch_size = 32

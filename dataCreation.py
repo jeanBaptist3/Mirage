@@ -99,7 +99,7 @@ def create_data(generated_blocks, prediction_blocks, bytes_per_token, train_size
     header = ['block_and_nonce','next_block']
 
     print(b64encode(plaintext).decode('utf-8') + "test")
-    with open(rf'{path}', 'w', encoding='UTF8',newline='') as fp:
+    with open(f'{path}', 'w', encoding='UTF8',newline='') as fp:
         writer = csv.writer(fp)
         writer.writerow(header)
         for text in data :
