@@ -1,2 +1,4 @@
 .idea
-data/data_dump.csv
+data
+model
+Modelle.xlsx
