@@ -129,13 +129,13 @@ class EncoderLayer(nn.Module):
 class TransformerModel(nn.Module):
     def __init__(self, embedding_dim, max_input_length,max_target_length, num_encoder_layers, num_decoder_layers, batch_size, output_dim, nhead):
         super(TransformerModel, self).__init__()
-        self.input_linear= nn.Linear(output_dim,embedding_dim)
+        self.input_linear = nn.Linear(output_dim,embedding_dim)
         self.input_position_encoder = PositionalEncoding(embedding_dim, max_input_length)
         self.target_position_encoder = PositionalEncoding(embedding_dim, max_target_length)
         self.encoder_layers = nn.ModuleList([EncoderLayer(embedding_dim, nhead) for _ in range(num_encoder_layers)])
         self.decoder_layers = nn.ModuleList([DecoderLayer(embedding_dim, nhead,max_target_length,batch_size) for _ in range(num_decoder_layers)])
         self.linear = nn.Linear(max_input_length,max_target_length)
-        self.output_linear =  nn.Linear(embedding_dim,output_dim)
+        self.output_linear = nn.Linear(embedding_dim,output_dim)
         self.batch_size = batch_size
         self.max_target_length = max_target_length
         self.embedding_dim = embedding_dim

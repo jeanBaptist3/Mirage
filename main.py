@@ -5,6 +5,7 @@ import trainer
 import torch
 import torch.optim as optim
 import torch.nn as nn
+import csv
 
 def main() :
     """
@@ -52,7 +53,16 @@ def main() :
     train_data_loader,val_data_loader,test_data_loader = dataLoader.create_data_loader(dataframe=dataframe,train_ratio=train_size/full_size,val_ratio=val_size/full_size,token_to_tensor=token_to_tensor,b_size=batch_size)
     print("created dataset and dataloader")
 
-    trainer.train(model_gpu,num_epochs,optimizer,loss_fn,train_data_loader,val_data_loader,test_data_loader,path_model)
+    model_trained = trainer.train(model_gpu,num_epochs,optimizer,loss_fn,train_data_loader,val_data_loader,test_data_loader,path_model)
+    results = trainer.evaluate_model(model_gpu= model_trained,test_data_loader = test_data_loader,tensor_to_token= tensor_to_token,b_size=batch_size)
+    header = ['batch index', 'accuracy in batch']
+
+    with open(f'results/{model_name}_accuracy', 'w', encoding='UTF8', newline='') as fp:
+        writer = csv.writer(fp)
+        writer.writerow(header)
+        for text in results:
+            writer.writerow(text)
+
 if __name__ =="__main__":
     main()
 
