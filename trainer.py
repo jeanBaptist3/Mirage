@@ -1,6 +1,8 @@
 import torch
+import time
 
 def train(model_gpu, num_epochs,optimizer, loss_fn, train_data_loader, val_data_loader, test_data_loader,path) :
+    start_time = time.time()
     for epoch in range(num_epochs):
         model_gpu.train()  # Set the model to training mode
         for input_batch, target_batch in train_data_loader:  # Iterate over mini-batches
@@ -23,7 +25,7 @@ def train(model_gpu, num_epochs,optimizer, loss_fn, train_data_loader, val_data_
                 predictions = model_gpu(input_batch, target_batch)
                 val_loss = loss_fn(predictions, target_batch)  # BCELoss for binary sequences
 
-        print(f'Epoch {epoch + 1}/{num_epochs}, Train Loss: {loss.item()}, Val Loss: {val_loss.item()}')
+        print(f'Epoch {epoch + 1}/{num_epochs}, Train Loss: {loss.item()}, Val Loss: {val_loss.item()}, %s seconds' %(time.time()-start_time))
 
     model_gpu.eval()
     with torch.no_grad():
