@@ -8,7 +8,6 @@ def train(model_gpu, num_epochs,optimizer, loss_fn, train_data_loader, val_data_
             # move botch batches to GPU
             input_batch = input_batch.cuda()
             target_batch = target_batch.cuda()
-            model_gpu = model_gpu.cuda()
             predictions = model_gpu(input_batch, target_batch)
             loss = loss_fn(predictions, target_batch)  # BCELoss for binary sequences
             loss.backward()  # Backpropagation

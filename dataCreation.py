@@ -25,7 +25,7 @@ def binary_to_hex(binary_str):
 
     return hex_str
 
-def create_data(generated_blocks, prediction_blocks, bytes_per_token, train_size,val_size,test_size) :
+def create_data(generated_blocks, prediction_blocks, bytes_per_token, train_size,val_size,test_size,path) :
     prefix = "predict the next 512 bit "
     plaintext = b''
     full_size = val_size+ test_size+ train_size
@@ -99,7 +99,7 @@ def create_data(generated_blocks, prediction_blocks, bytes_per_token, train_size
     header = ['block_and_nonce','next_block']
 
     print(b64encode(plaintext).decode('utf-8') + "test")
-    with open(r'data/data_dump.csv', 'w', encoding='UTF8',newline='') as fp:
+    with open(rf'{path}', 'w', encoding='UTF8',newline='') as fp:
         writer = csv.writer(fp)
         writer.writerow(header)
         for text in data :

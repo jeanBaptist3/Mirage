@@ -87,8 +87,7 @@ class DecoderLayer(nn.Module):
         x = x + ff_output
         x = self.norm3(x)
 
-        out = F.softmax(x)
-        return out
+        return x
 
 
 class EncoderLayer(nn.Module):
@@ -130,24 +129,27 @@ class EncoderLayer(nn.Module):
 class TransformerModel(nn.Module):
     def __init__(self, embedding_dim, max_input_length,max_target_length, num_encoder_layers, num_decoder_layers, batch_size, output_dim, nhead):
         super(TransformerModel, self).__init__()
+        self.input_linear= nn.Linear(output_dim,embedding_dim)
         self.input_position_encoder = PositionalEncoding(embedding_dim, max_input_length)
         self.target_position_encoder = PositionalEncoding(embedding_dim, max_target_length)
         self.encoder_layers = nn.ModuleList([EncoderLayer(embedding_dim, nhead) for _ in range(num_encoder_layers)])
         self.decoder_layers = nn.ModuleList([DecoderLayer(embedding_dim, nhead,max_target_length,batch_size) for _ in range(num_decoder_layers)])
         self.linear = nn.Linear(max_input_length,max_target_length)
-        self.output_linear = nn.Linear(embedding_dim,output_dim)
+        self.output_linear =  nn.Linear(embedding_dim,output_dim)
         self.batch_size = batch_size
         self.max_target_length = max_target_length
         self.embedding_dim = embedding_dim
-
+            
     def forward(self, input, target):
 
         # positional encoding
-        input_embedding = self.input_position_encoder(input)
-        target_embedding = self.target_position_encoder(target)
+        input = self.input_linear(input)
+        target = self.input_linear(target)
+        input_pos = self.input_position_encoder(input)
+        target_pos = self.target_position_encoder(target)
 
         for layer in self.encoder_layers:
-            input = layer(input_embedding)
+            input_pos = layer(input_pos)
 
             #print("encoder outputs:" + str(input.size()))
             #print(input)
@@ -155,16 +157,17 @@ class TransformerModel(nn.Module):
         encoder_output = torch.empty([self.batch_size,self.max_target_length,self.embedding_dim]).cuda()
         #print(encoder_output.size())
         for i in range(self.batch_size):
-          encoder_output[i] = torch.transpose(self.linear(torch.transpose(input[i],0,1)),0,1)
+          encoder_output[i] = torch.transpose(self.linear(torch.transpose(input_pos[i],0,1)),0,1)
          # Apply the decoder layers with the target_mask and input as context
 
         #print(encoder_output.device)
 
         for layer in self.decoder_layers:
-            target = layer(target_embedding, encoder_output)
+            target_pos = layer(target_pos, encoder_output)
             #print(target.size())
 
-        output = self.output_linear(target)
-        return target  # Return the decoder's output
+        #output = self.output_linear(target_pos)
+        out = self.output_linear(target_pos)
+        return torch.sigmoid(out)
 
 
