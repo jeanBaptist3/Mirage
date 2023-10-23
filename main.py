@@ -12,11 +12,11 @@ def main() :
     This section contains the Variables you can choose to train the model with:
     :return:
     """
-    train_size = 50000
+    train_size = 10000
     test_size = 1000
     val_size = 1000
     batch_size = 32
-    generated_blocks = 4
+    generated_blocks = 64
     prediction_blocks = 1
     bytes_per_token = 1
     embedding_dim = 256  #embedding dimension
@@ -27,7 +27,7 @@ def main() :
     nhead = 8  # Number of attention heads
     num_decoder_layers = 4
     num_epochs = 10
-    model_name = "mirage" + "Big"
+    model_name = "mirage" + "longS" + f'{generated_blocks}_{prediction_blocks}'
     path_model = f"model/dim{embedding_dim}/{model_name}{train_size}.pth "
     data_path = f"data/{train_size}data_dump.csv"
     new_data = "y"

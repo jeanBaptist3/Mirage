@@ -25,7 +25,9 @@ def train(model_gpu, num_epochs,optimizer, loss_fn, train_data_loader, val_data_
                 predictions = model_gpu(input_batch, target_batch)
                 val_loss = loss_fn(predictions, target_batch)  # BCELoss for binary sequences
 
-        print(f'Epoch {epoch + 1}/{num_epochs}, Train Loss: {loss.item()}, Val Loss: {val_loss.item()}, %s seconds' %(time.time()-start_time))
+
+        print(f'Epoch {epoch + 1}/{num_epochs}, Train Loss: {loss.item()}, Val Loss: {val_loss.item()} in %s seconds' % (time.time()-start_time))
+>>>>>>> 38df5ff (results now online)
 
     model_gpu.eval()
     with torch.no_grad():
@@ -69,8 +71,6 @@ def evaluate_model(model_gpu,test_data_loader,tensor_to_token,b_size):
             predictions = torch.round(model_gpu(input_data, target_data))
 
         for i in range(b_size):
-            print(predictions.size())
-            print(target_batch[i])
             target_dec = decode_sequence(target_batch[i], tensor_to_token)
             pred_dec = decode_sequence(predictions[i], tensor_to_token)
             bits_per_batch = bits_per_batch + string_similarity(target_dec, pred_dec)
