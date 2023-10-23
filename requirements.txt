@@ -1,0 +1,7 @@
+#cipher
+pycryptodome
+
+#model 
+torch
+
+pandas
