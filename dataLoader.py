@@ -28,10 +28,11 @@ def create_tensor_dict():
             [float(bit) for bit in binary_token])  # Create a tensor with float values (0.0 or 1.0)
         token_to_tensor[hex_token] = binary_tensor
 
-    token_to_tensor['<SOSE>'] = torch.tensor([0.75, 0.75, 0.75, 0.75, 0.75, 0.75, 0.75, 0.75])
-    token_to_tensor['<SOSD>'] = torch.tensor([0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25])
+
     tensor_to_token = {tuple(binary_tensor.tolist()): hex_to_binary(hex_token) for hex_token, binary_tensor in
                        token_to_tensor.items()}
+    token_to_tensor['<SOSE>'] = torch.tensor([0.75, 0.75, 0.75, 0.75, 0.75, 0.75, 0.75, 0.75])
+    token_to_tensor['<SOSD>'] = torch.tensor([0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25])
     return token_to_tensor, tensor_to_token
 
 

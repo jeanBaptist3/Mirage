@@ -28,7 +28,7 @@ class PositionalEncoding(nn.Module):
 
 
 class DecoderLayer(nn.Module):
-    def __init__(self, d_model, nhead, max_target_length,batch_size):
+    def __init__(self, d_model, nhead, max_target_length,batch_size,mask):
         super(DecoderLayer, self).__init__()
         self.self_attn = nn.MultiheadAttention(d_model, nhead,batch_first = True)
         self.multihead_attn = nn.MultiheadAttention(d_model, nhead, batch_first = True)
@@ -41,6 +41,7 @@ class DecoderLayer(nn.Module):
         self.batch_size= batch_size
         self.max_target_length= max_target_length
         self.nhead = nhead
+        self.attn_mask = mask
 
         init.xavier_uniform_(self.linear1.weight)
         init.zeros_(self.linear1.bias)
@@ -49,24 +50,9 @@ class DecoderLayer(nn.Module):
         init.zeros_(self.linear2.bias)
 
     def forward(self, x, enc_output):
-        # Multihead self-attention with future-position and padding mask
 
-        attn_shape = (self.batch_size * self.nhead, x.size(1), x.size(1))
-        #attention_mask = torch.ones(attn_shape)
-
-        mask = torch.triu(torch.ones(self.max_target_length, self.max_target_length), diagonal=1)
-
-        # Expand the mask to the batch dimension
-        mask = mask.unsqueeze(0).expand(self.batch_size * self.nhead, -1, -1)
-
-        # Reshape the mask to match the required shape [batch_size * num_heads, sequence_length, sequence_length]
-        attention_mask = mask[:, :x.size(1), :x.size(1)]
-        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        attention_mask=attention_mask.to(device)
-
-        # Apply self-attention with the generated mask
-
-        attn_output, _ = self.self_attn(x, x, x, attn_mask=attention_mask)
+        # Multihead self-attention with future-position masking
+        attn_output, _ = self.self_attn(x, x, x, attn_mask=self.attn_mask)
         #print("decoder attention :" + str(attn_output.size()))
         #print(attn_output)
 
@@ -127,13 +113,13 @@ class EncoderLayer(nn.Module):
 
 
 class TransformerModel(nn.Module):
-    def __init__(self, embedding_dim, max_input_length,max_target_length, num_encoder_layers, num_decoder_layers, batch_size, output_dim, nhead):
+    def __init__(self, embedding_dim, max_input_length,max_target_length, num_encoder_layers, num_decoder_layers, batch_size, output_dim, nhead,mask):
         super(TransformerModel, self).__init__()
         self.input_linear = nn.Linear(output_dim,embedding_dim)
         self.input_position_encoder = PositionalEncoding(embedding_dim, max_input_length)
         self.target_position_encoder = PositionalEncoding(embedding_dim, max_target_length)
         self.encoder_layers = nn.ModuleList([EncoderLayer(embedding_dim, nhead) for _ in range(num_encoder_layers)])
-        self.decoder_layers = nn.ModuleList([DecoderLayer(embedding_dim, nhead,max_target_length,batch_size) for _ in range(num_decoder_layers)])
+        self.decoder_layers = nn.ModuleList([DecoderLayer(embedding_dim, nhead,max_target_length,batch_size,mask) for _ in range(num_decoder_layers)])
         self.linear = nn.Linear(max_input_length,max_target_length)
         self.output_linear = nn.Linear(embedding_dim,output_dim)
         self.batch_size = batch_size

@@ -20,7 +20,7 @@ def main(iterations,new_data):
     generated_blocks = 64
     prediction_blocks = 1
     bytes_per_token = 1
-    embedding_dim = 256
+    embedding_dim = 1024
     max_input_length = generated_blocks * 64 + 8
     max_t_length = prediction_blocks * 64  #target
     num_encoder_layers = 4
@@ -32,10 +32,11 @@ def main(iterations,new_data):
     path_model = f"model/dim{embedding_dim}/{model_name}{train_size}.pth "
     data_path = f"data/{train_size}data_dump.csv"
 
+    mask = torch.triu(torch.ones(max_t_length, max_t_length), diagonal=1)
 
     #model initialization with hyperparameters
     model_gpu = model.TransformerModel(embedding_dim, max_input_length, max_t_length, num_encoder_layers,
-                                       num_decoder_layers, batch_size, output_dim, nhead)
+                                       num_decoder_layers, batch_size, output_dim, nhead, mask)
     model_gpu = model_gpu.cuda()
     print("created model")
     loss_fn = nn.BCELoss()  # BCELoss for binary prediction
