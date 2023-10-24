@@ -8,10 +8,11 @@ import torch.nn as nn
 import csv
 
 
-def main():
+def main(iterations,new_data):
     """
     This section contains the Variables you can choose to train the model with:
     """
+    print(f'Iteration : {iterations}')
     train_size = 10000
     test_size = 1024
     val_size = 1024
@@ -27,10 +28,10 @@ def main():
     nhead = 8  # Number of attention heads
     num_decoder_layers = 4
     num_epochs = 10
-    model_name = "mirage" + "longS" + f'{generated_blocks}_{prediction_blocks}'+'PAD'
+    model_name = "mirage" + "longS" + f'{generated_blocks}_{iterations}'+'NOSOS'
     path_model = f"model/dim{embedding_dim}/{model_name}{train_size}.pth "
     data_path = f"data/{train_size}data_dump.csv"
-    new_data = "y"
+
 
     #model initialization with hyperparameters
     model_gpu = model.TransformerModel(embedding_dim, max_input_length, max_t_length, num_encoder_layers,
@@ -44,7 +45,7 @@ def main():
 
     full_size = train_size + test_size + val_size
     #creating the examples with a new key or using the old ones
-    if new_data == "y":
+    if new_data:
         dataCreation.create_data(generated_blocks=generated_blocks, prediction_blocks=prediction_blocks,
                                  bytes_per_token=bytes_per_token, train_size=train_size, test_size=test_size,
                                  val_size=val_size, path=data_path)
@@ -76,4 +77,10 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    iterations = 5
+    for i in range(iterations) :
+        print()
+        if(iterations > 0) :
+            main(iterations=iterations,new_data=False)
+        else:
+            main(iterations=iterations,new_data=True)
