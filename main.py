@@ -81,7 +81,7 @@ def main(iterations,new_data):
     print("created dataset and dataloader")
 
     model_trained = trainer.train(model_gpu, num_epochs, optimizer, loss_fn, train_data_loader, val_data_loader,
-                                  test_data_loader, path_model,writer=writer,iteration=iterations)
+                                  test_data_loader, path_model,token_to_tensor=token_to_tensor,writer=writer,iteration=iterations)
     results = trainer.evaluate_model(model_gpu=model_trained, test_data_loader=test_data_loader,
                                      tensor_to_token=tensor_to_token,token_to_tensor=token_to_tensor, b_size=batch_size,writer=writer)
     header = ['batch index', 'accuracy in batch']
