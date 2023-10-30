@@ -19,24 +19,27 @@ def hex_to_binary(hex_string):
     return binary_string
 
 
-def create_tensor_dict():
+def create_tensor_dict(start_token,end_token):
     token_to_tensor = {}
     for i in range(256):
         hex_token = format(i, '02x')  # Convert the integer to a 2-character lowercase hex string
         binary_token = format(i, '08b')  # Convert the integer to an 8-character binary string
         binary_tensor = torch.tensor(
-            [float(bit) for bit in binary_token])  # Create a tensor with float values (0.0 or 1.0)
+            [0.] + [float(bit) for bit in binary_token])  # Create a tensor with float values (0.0 or 1.0)
         token_to_tensor[hex_token] = binary_tensor
 
 
     tensor_to_token = {tuple(binary_tensor.tolist()): hex_to_binary(hex_token) for hex_token, binary_tensor in
                        token_to_tensor.items()}
-    token_to_tensor['<SOSE>'] = torch.tensor([0.75, 0.75, 0.75, 0.75, 0.75, 0.75, 0.75, 0.75])
-    token_to_tensor['<SOSD>'] = torch.tensor([0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25])
+    token_to_tensor[start_token] = torch.tensor([1.,0.,0.,0.,0.,0.,0.,0.,0.])
+    token_to_tensor[end_token] = torch.tensor([1.,1.,1.,1.,1.,1.,1.,1.,1.])
+
+    tensor_to_token[[1.,1.,1.,1.,1.,1.,1.,1.,1.]] =  end_token
+    tensor_to_token[[1.,0.,0.,0.,0.,0.,0.,0.,0.]] =  start_token
     return token_to_tensor, tensor_to_token
 
 
-def encode_sequence(sequence, token_to_embedding, is_encoder):
+def encode_sequence(sequence, token_to_embedding):
     # Split the sequence into tokens
     tokens = sequence.split(",")
 

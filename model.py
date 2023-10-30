@@ -4,6 +4,7 @@ import torch.nn.init as init
 import torch
 import math
 import torch.nn.functional as F
+from torch.utils.tensorboard import SummaryWriter
 
 
 class PositionalEncoding(nn.Module):
@@ -154,6 +155,6 @@ class TransformerModel(nn.Module):
 
         #output = self.output_linear(target_pos)
         out = self.output_linear(target_pos)
-        return torch.sigmoid(out)
+        return torch.sigmoid(torch.mul(out,10))
 
 
