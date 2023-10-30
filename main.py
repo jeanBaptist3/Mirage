@@ -77,7 +77,7 @@ def main(iterations,new_data):
                                                                                          token_to_tensor=token_to_tensor,
                                                                                          b_size=batch_size,
                                                                                          source_flag=source_flag,
-                                                                                         target_flag=target_flag)
+                                                                                         encoder_flag=target_flag)
     print("created dataset and dataloader")
 
     model_trained = trainer.train(model_gpu, num_epochs, optimizer, loss_fn, train_data_loader, val_data_loader,
