@@ -52,9 +52,9 @@ def encode_sequence(sequence, token_to_embedding):
     return input_tensor
 
 
-def create_data_loader(dataframe, train_ratio, val_ratio, token_to_tensor, b_size):
-    X = dataframe[['block_and_nonce']]  # inputs
-    y = dataframe[['next_block']]  # targets
+def create_data_loader(dataframe, train_ratio, val_ratio, token_to_tensor, b_size,source_flag,encoder_flag):
+    X = dataframe[[source_flag]]  # inputs
+    y = dataframe[[encoder_flag]]  # targets
 
     if train_ratio + val_ratio > 1:
         print("falsche Angaben der Verhältnisse")
@@ -72,8 +72,8 @@ def create_data_loader(dataframe, train_ratio, val_ratio, token_to_tensor, b_siz
     train_target_embeddings = []
 
     for index, row in X_train.iterrows():
-        input_sequence = row['block_and_nonce']
-        target_sequence = y_train.loc[index, 'next_block']
+        input_sequence = row[source_flag]
+        target_sequence = y_train.loc[index, encoder_flag]
 
         input_embedding = encode_sequence(input_sequence, token_to_tensor, True)
         target_embedding = encode_sequence( target_sequence, token_to_tensor, False)
@@ -88,8 +88,8 @@ def create_data_loader(dataframe, train_ratio, val_ratio, token_to_tensor, b_siz
     val_target_embeddings = []
 
     for index, row in X_val.iterrows():
-        input_sequence = row['block_and_nonce']
-        target_sequence = y_val.loc[index, 'next_block']
+        input_sequence = row[source_flag]
+        target_sequence = y_val.loc[index, encoder_flag]
 
         input_embedding = encode_sequence( input_sequence, token_to_tensor, True)
         target_embedding = encode_sequence(target_sequence, token_to_tensor, False)
@@ -104,8 +104,8 @@ def create_data_loader(dataframe, train_ratio, val_ratio, token_to_tensor, b_siz
     test_target_embeddings = []
 
     for index, row in X_test.iterrows():
-        input_sequence = row['block_and_nonce']
-        target_sequence = y_test.loc[index, 'next_block']
+        input_sequence = row[source_flag]
+        target_sequence = y_test.loc[index, encoder_flag]
 
         input_embedding = encode_sequence(  input_sequence, token_to_tensor, True)
         target_embedding = encode_sequence(  target_sequence, token_to_tensor, False)

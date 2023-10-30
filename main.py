@@ -11,11 +11,17 @@ from torch.utils.tensorboard import SummaryWriter
 
 def main(iterations,new_data):
     """
+    Constants
+    """
+    start_token = '<SOS>'
+    end_token = '<EOS>'
+    source_flag = 'source_sequence'
+    target_flag = 'target_sequence'
+    """
     This section contains the Variables you can choose to train the model with:
     """
     print(f'Iteration : {iterations}')
-    start_token = '<SOS>'
-    end_token = '<EOS>'
+    
     train_size = 10240
     test_size = 1024
     val_size = 1024
@@ -69,7 +75,9 @@ def main(iterations,new_data):
                                                                                          train_ratio=train_size / full_size,
                                                                                          val_ratio=val_size / full_size,
                                                                                          token_to_tensor=token_to_tensor,
-                                                                                         b_size=batch_size)
+                                                                                         b_size=batch_size,
+                                                                                         source_flag=source_flag,
+                                                                                         target_flag=target_flag)
     print("created dataset and dataloader")
 
     model_trained = trainer.train(model_gpu, num_epochs, optimizer, loss_fn, train_data_loader, val_data_loader,
