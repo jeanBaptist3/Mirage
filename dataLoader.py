@@ -75,8 +75,8 @@ def create_data_loader(dataframe, train_ratio, val_ratio, token_to_tensor, b_siz
         input_sequence = row[source_flag]
         target_sequence = y_train.loc[index, encoder_flag]
 
-        input_embedding = encode_sequence(input_sequence, token_to_tensor, True)
-        target_embedding = encode_sequence( target_sequence, token_to_tensor, False)
+        input_embedding = encode_sequence(input_sequence, token_to_tensor)
+        target_embedding = encode_sequence( target_sequence, token_to_tensor)
 
         train_input_embeddings.append(input_embedding)
         train_target_embeddings.append(target_embedding)
@@ -91,8 +91,8 @@ def create_data_loader(dataframe, train_ratio, val_ratio, token_to_tensor, b_siz
         input_sequence = row[source_flag]
         target_sequence = y_val.loc[index, encoder_flag]
 
-        input_embedding = encode_sequence( input_sequence, token_to_tensor, True)
-        target_embedding = encode_sequence(target_sequence, token_to_tensor, False)
+        input_embedding = encode_sequence( input_sequence, token_to_tensor)
+        target_embedding = encode_sequence(target_sequence, token_to_tensor)
 
         val_input_embeddings.append(input_embedding)
         val_target_embeddings.append(target_embedding)
@@ -107,8 +107,8 @@ def create_data_loader(dataframe, train_ratio, val_ratio, token_to_tensor, b_siz
         input_sequence = row[source_flag]
         target_sequence = y_test.loc[index, encoder_flag]
 
-        input_embedding = encode_sequence(  input_sequence, token_to_tensor, True)
-        target_embedding = encode_sequence(  target_sequence, token_to_tensor, False)
+        input_embedding = encode_sequence(  input_sequence, token_to_tensor)
+        target_embedding = encode_sequence(  target_sequence, token_to_tensor)
 
         test_input_embeddings.append(input_embedding)
         test_target_embeddings.append(target_embedding)
