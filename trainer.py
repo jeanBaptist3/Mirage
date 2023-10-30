@@ -25,6 +25,7 @@ def train(model_gpu, num_epochs, optimizer, loss_fn, train_data_loader, val_data
                     if param.requires_grad:
                         writer.add_histogram(f'Iteration{iteration}for{name}', param.data.cpu().numpy(), global_step=global_step)
             global_step += 1
+        writer.add_scalar(f"Loss in Iteration {iteration}",loss,global_step=global_step)
         print("step")
 
         model_gpu.eval()  # evaluation mode
