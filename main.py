@@ -31,7 +31,7 @@ def main(iterations,new_data):
     nhead = 8  # Number of attention heads
     num_decoder_layers = 4
     num_epochs = 15
-    optimizer = "ASDG"
+    optimizer = "ASGD"
     model_name = "mirage" + "longS" + optimizer + f'{encoder_blocks}_{iterations}'
     path_model = f"model/dim{embedding_dim}/{model_name}{train_size}.pth "
     data_path = f"data/{train_size}data_dump.csv"
@@ -48,7 +48,7 @@ def main(iterations,new_data):
     model_gpu = model_gpu.cuda()
     print("created model")
     loss_fn = nn.BCELoss()  # BCELoss for binary prediction
-    optimizer = optim.ASDG(model_gpu.parameters(), lr=0.0005)
+    optimizer = optim.ASGD(model_gpu.parameters(), lr=0.005)
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print(device)
 
@@ -64,7 +64,7 @@ def main(iterations,new_data):
 
     #loading the data from files
     dataframe = dataLoader.load_csv(path=data_path)
-    token_to_tensor, tensor_to_token = dataLoader.create_tensor_dict(start_token)
+    token_to_tensor, tensor_to_token = dataLoader.create_tensor_dict(start_token=start_token,end_token=end_token)
     train_data_loader, val_data_loader, test_data_loader = dataLoader.create_data_loader(dataframe=dataframe,
                                                                                          train_ratio=train_size / full_size,
                                                                                          val_ratio=val_size / full_size,
@@ -73,9 +73,9 @@ def main(iterations,new_data):
     print("created dataset and dataloader")
 
     model_trained = trainer.train(model_gpu, num_epochs, optimizer, loss_fn, train_data_loader, val_data_loader,
-                                  test_data_loader, path_model,iteration=iterations)
+                                  test_data_loader, path_model,writer=writer,iteration=iterations)
     results = trainer.evaluate_model(model_gpu=model_trained, test_data_loader=test_data_loader,
-                                     tensor_to_token=tensor_to_token, b_size=batch_size)
+                                     tensor_to_token=tensor_to_token,token_to_tensor=token_to_tensor, b_size=batch_size,writer=writer)
     header = ['batch index', 'accuracy in batch']
 
     with open(f'results/{model_name}_accuracy', 'w', encoding='UTF8', newline='') as fp:
