@@ -34,21 +34,15 @@ def create_tensor_dict(start_token,end_token):
     token_to_tensor[start_token] = torch.tensor([1.,0.,0.,0.,0.,0.,0.,0.,0.])
     token_to_tensor[end_token] = torch.tensor([1.,1.,1.,1.,1.,1.,1.,1.,1.])
 
-    tensor_to_token[[1.,1.,1.,1.,1.,1.,1.,1.,1.]] =  end_token
-    tensor_to_token[[1.,0.,0.,0.,0.,0.,0.,0.,0.]] =  start_token
+    tensor_to_token[tuple([1.,1.,1.,1.,1.,1.,1.,1.,1.])] =  end_token
+    tensor_to_token[tuple([1.,0.,0.,0.,0.,0.,0.,0.,0.])] =  start_token
     return token_to_tensor, tensor_to_token
 
 
 def encode_sequence(sequence, token_to_embedding):
     # Split the sequence into tokens
     tokens = sequence.split(",")
-
-    """
-    if is_encoder:
-        embeddings = token_to_embedding['<SOSE>']
-    else:
-        embeddings = token_to_embedding['<SOSD>']
-    """
+    
     # Map tokens to embeddings
     embeddings = [token_to_embedding[token] for token in tokens]
 
