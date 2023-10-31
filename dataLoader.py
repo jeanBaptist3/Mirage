@@ -28,14 +28,25 @@ def create_tensor_dict(start_token,end_token):
             [0.] + [float(bit) for bit in binary_token])  # Create a tensor with float values (0.0 or 1.0)
         token_to_tensor[hex_token] = binary_tensor
 
-
+    
     tensor_to_token = {tuple(binary_tensor.tolist()): hex_to_binary(hex_token) for hex_token, binary_tensor in
                        token_to_tensor.items()}
     token_to_tensor[start_token] = torch.tensor([1.,0.,0.,0.,0.,0.,0.,0.,0.])
     token_to_tensor[end_token] = torch.tensor([1.,1.,1.,1.,1.,1.,1.,1.,1.])
 
-    tensor_to_token[tuple([1.,1.,1.,1.,1.,1.,1.,1.,1.])] =  end_token
+    """
+    This lower for loop is or reverting the output to its binary string.
+    Since their can be some rounding issues we allow now 2 representations for the same 8 bit binary String and remove EOS and SOS token since it 
+    can cause some issues regarding the lenght of a string
+    """
+    for j in range(256):            
+        hex_token = format(j,'02x')  # Convert integer to the hex string
+        binary_tensor= torch.tensor([1.]+ [float(bit) for bit in format(j,'08b')])
+        tensor_to_token[tuple(binary_tensor.tolist())] = hex_to_binary(hex_token)
+
+    """tensor_to_token[tuple([1.,1.,1.,1.,1.,1.,1.,1.,1.])] =  end_token
     tensor_to_token[tuple([1.,0.,0.,0.,0.,0.,0.,0.,0.])] =  start_token
+    """
     return token_to_tensor, tensor_to_token
 
 

@@ -86,6 +86,7 @@ def evaluate_model(model_gpu, test_data_loader, tensor_to_token,token_to_tensor,
         input_data = input_batch.cuda()
         decoder_batch = target_batch[:, :-1, :]
         decoder_batch = torch.cat((start_tensor, decoder_batch), dim=1)
+        decoder_batch = decoder_batch.cuda()
         with torch.no_grad():  # Disable gradient tracking for inference
             predictions = torch.round(model_gpu(input_data, decoder_batch))
 
