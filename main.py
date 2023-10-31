@@ -1,3 +1,4 @@
+import datetime
 import dataCreation
 import dataLoader
 import model
@@ -17,31 +18,40 @@ def main(iterations,new_data):
     end_token = '<EOS>'
     source_flag = 'source_sequence'
     target_flag = 'target_sequence'
-    """
-    This section contains the Variables you can choose to train the model with:
-    """
+    output_dim = 9
     print(f'Iteration : {iterations}')
-    
+
+    """
+    These are the Variables for the amount of data
+    """
     train_size = 10240
     test_size = 1024
     val_size = 1024
-    batch_size = 32
     encoder_blocks = 2
     decoder_blocks = 1
+
+    """
+    This section contains the variables you can choose to train the model with:
+    """
+    batch_size = 32
     bytes_per_token = 1
     embedding_dim = 256
     max_input_length = encoder_blocks * 64 + 8 + 1
     max_t_length = decoder_blocks * 64  + 1 #target
-    num_encoder_layers = 4
-    output_dim = 9
+    num_encoder_layers = 1
     nhead = 8  # Number of attention heads
-    num_decoder_layers = 4
+    num_decoder_layers = 1
     num_epochs = 15
     optimizer = "ASGD"
+
+    """
+    This section contains the variables concerned with saving the model, logs and data
+    """	
     model_name = "mirage" + "longS" + optimizer + f'{encoder_blocks}_{iterations}'
+    model_logs = "model/logs/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
     path_model = f"model/dim{embedding_dim}/{model_name}{train_size}.pth "
     data_path = f"data/{train_size}data_dump.csv"
-    writer = SummaryWriter("model/logs")
+    writer = SummaryWriter(model_logs)
 
     mask = torch.triu(torch.ones(max_t_length, max_t_length), diagonal=0)
     mask= torch.transpose(mask,0,1)
