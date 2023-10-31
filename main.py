@@ -49,7 +49,7 @@ def main(iterations,new_data):
     """	
     model_name = "ShortS"
     full_name = "mirage" + model_name + optimizer + f'{encoder_blocks}_{iterations}'
-    model_logs = "model/logs/" + datetime.datetime.now().strftime("%Y%m%d") + model_name + "Iteration:" + iterations
+    model_logs = "model/logs/" + datetime.datetime.now().strftime("%Y%m%d") + model_name + "Iteration:" + str(iterations)
     path_model = f"model/dim{embedding_dim}/{model_name}{train_size}.pth "
     data_path = f"data/{train_size}data_dump.csv"
     writer = SummaryWriter(model_logs)
