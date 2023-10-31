@@ -47,8 +47,9 @@ def main(iterations,new_data):
     """
     This section contains the variables concerned with saving the model, logs and data
     """	
-    model_name = "mirage" + "longS" + optimizer + f'{encoder_blocks}_{iterations}'
-    model_logs = "model/logs/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+    model_name = "ShortS"
+    full_name = "mirage" + model_name + optimizer + f'{encoder_blocks}_{iterations}'
+    model_logs = "model/logs/" + datetime.datetime.now().strftime("%Y%m%d") + model_name
     path_model = f"model/dim{embedding_dim}/{model_name}{train_size}.pth "
     data_path = f"data/{train_size}data_dump.csv"
     writer = SummaryWriter(model_logs)

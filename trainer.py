@@ -21,7 +21,7 @@ def train(model_gpu, num_epochs, optimizer, loss_fn, train_data_loader, val_data
             loss = loss_fn(predictions, target_batch)
             loss.backward()  # Backpropagation
             optimizer.step()  # Parameter updates
-            if  global_step % 100 == 0:
+            if  global_step % 500 == 0:
                 for name, param in model_gpu.named_parameters():
                     if param.requires_grad:
                         writer.add_histogram(f'Iteration{iteration}for{name}', param.data.cpu().numpy(), global_step=global_step)
