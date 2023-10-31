@@ -50,7 +50,7 @@ def main(iterations,new_data):
     model_name = "ShortS"
     full_name = "mirage" + model_name + optimizer + f'{encoder_blocks}_{iterations}'
     model_logs = "model/logs/" + datetime.datetime.now().strftime("%Y%m%d") + model_name+ optimizer + "Iteration:" + str(iterations)
-    path_model = f"model/dim{embedding_dim}/{model_name}{train_size}.pth "
+    path_model = f"model/dim{embedding_dim}/{full_name}{train_size}.pth "
     data_path = f"data/{train_size}data_dump.csv"
     writer = SummaryWriter(model_logs)
 
@@ -97,7 +97,7 @@ def main(iterations,new_data):
                                      tensor_to_token=tensor_to_token,token_to_tensor=token_to_tensor, b_size=batch_size,summary_writer=writer)
     header = ['batch index', 'accuracy in batch']
 
-    with open(f'results/{model_name}_accuracy', 'w', encoding='UTF8', newline='') as fp:
+    with open(f'results/{full_name}_accuracy', 'w', encoding='UTF8', newline='') as fp:
         writer = csv.writer(fp)
         writer.writerow(header)
         for text in results:
