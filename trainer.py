@@ -5,11 +5,12 @@ import time
 def train(model_gpu, num_epochs, optimizer, loss_fn, train_data_loader, val_data_loader, test_data_loader, path,token_to_tensor,writer,iteration):
     start_time = time.time()
     global_step = 0
-    start_tensor = token_to_tensor['<SOS>'].unsqueeze(0).unsqueeze(0).expand(target_batch.size(0), 1, -1)
     for epoch in range(num_epochs):
         model_gpu.train()  # training mode
         for input_batch, target_batch in train_data_loader:  # Iterate over mini-batches
             optimizer.zero_grad()  # Clear gradients
+            if global_step ==0:
+                start_tensor = token_to_tensor['<SOS>'].unsqueeze(0).unsqueeze(0).expand(target_batch.size(0), 1, -1)
             decoder_batch = target_batch[:, :-1, :]
             decoder_batch = torch.cat((start_tensor,decoder_batch), dim=1)
             # move both batches on the gpu
