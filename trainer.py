@@ -78,9 +78,10 @@ def evaluate_model(model_gpu, test_data_loader, tensor_to_token,token_to_tensor,
     batch_idx = 1
     evaluation_dataset = []
     overall_accuracy = 0.
-    start_tensor = token_to_tensor['<SOS>'].unsqueeze(0).unsqueeze(0).expand(target_batch.size(0), 1, -1)
+    
     for input_batch, target_batch in test_data_loader:
-
+        if batch_idx == 1:
+            start_tensor = token_to_tensor['<SOS>'].unsqueeze(0).unsqueeze(0).expand(target_batch.size(0), 1, -1)
         bits_per_batch = 0.
         input_data = input_batch.cuda()
         decoder_batch = target_batch[:, :-1, :]
