@@ -93,7 +93,7 @@ def evaluate_model(model_gpu, test_data_loader, tensor_to_token,token_to_tensor,
         for i in range(b_size):
             target_dec = decode_sequence(target_batch[i], tensor_to_token)
             pred_dec = decode_sequence(predictions[i], tensor_to_token)
-            bits_per_batch = bits_per_batch + string_similarity(target_dec, pred_dec)
+            bits_per_batch = bits_per_batch + string_similarity(target_dec[:-8], pred_dec[:-8])
         accuracy_per_batch = bits_per_batch / b_size
         overall_accuracy = overall_accuracy + accuracy_per_batch
         batch_idx = batch_idx + 1
