@@ -8,6 +8,7 @@ import torch.optim as optim
 import torch.nn as nn
 import csv
 from torch.utils.tensorboard import SummaryWriter
+import testData as tD
 
 
 def main(iterations,new_data):
@@ -27,6 +28,7 @@ def main(iterations,new_data):
     train_size = 10240
     test_size = 1024
     val_size = 1024
+    full_size = train_size+test_size+val_size
     encoder_blocks = 2
     decoder_blocks = 1
 
@@ -35,9 +37,11 @@ def main(iterations,new_data):
     """
     batch_size = 32
     bytes_per_token = 1
-    embedding_dim = 256
-    max_input_length = encoder_blocks * 64 + 8 + 1
-    max_t_length = decoder_blocks * 64  + 1 #target
+    embedding_dim = 32
+    """max_input_length = encoder_blocks * 64 + 8 + 1
+    max_t_length = decoder_blocks * 64  + 1"""
+    max_input_length = 3
+    max_t_length = 2
     num_encoder_layers = 1
     nhead = 8  # Number of attention heads
     num_decoder_layers = 1
@@ -47,7 +51,7 @@ def main(iterations,new_data):
     """
     This section contains the variables concerned with saving the model, logs and data
     """	
-    model_name = "ShortS"
+    model_name = "ModelTest"
     full_name = "mirage" + model_name + optimizer + f'{encoder_blocks}_{iterations}'
     model_logs = "model/logs/" + datetime.datetime.now().strftime("%Y%m%d") + model_name+ optimizer + "Iteration:" + str(iterations)
     path_model = f"model/dim{embedding_dim}/{full_name}{train_size}.pth "
@@ -72,12 +76,13 @@ def main(iterations,new_data):
     full_size = train_size + test_size + val_size
     #creating the examples with a new key or using the old ones
     if new_data:
-        dataCreation.create_data(generated_blocks=encoder_blocks, prediction_blocks=decoder_blocks,
+        """dataCreation.create_data(generated_blocks=encoder_blocks, prediction_blocks=decoder_blocks,
                                  bytes_per_token=bytes_per_token, train_size=train_size, test_size=test_size,
-                                 val_size=val_size, path=data_path,start_token=start_token,end_token=end_token)
+                                 val_size=val_size, path=data_path,start_token=start_token,end_token=end_token)"""
+        tD.xoRand(full_size=full_size,path=data_path,start_token=start_token,end_token=end_token)
         print("Data Creation Complete")
 
- 
+
 
     #loading the data from files
     dataframe = dataLoader.load_csv(path=data_path)

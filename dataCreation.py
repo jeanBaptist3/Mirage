@@ -69,7 +69,7 @@ def create_data(generated_blocks, prediction_blocks, bytes_per_token, train_size
         """
         The following 3 for loops add "," into the strings, therefore separating after each byte_per_token bytes  
         """
-
+        
         #the generated blocks which will be used for the encoder
         for j in range(1, gen_blocks * 64 //bytes_per_token):
             pretokenized_input = pretokenized_input[:gen_blocks*128 - j * 2*bytes_per_token]+ "," + pretokenized_input[gen_blocks*128 - j *2*bytes_per_token:]
