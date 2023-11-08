@@ -88,11 +88,16 @@ def evaluate_model(model_gpu, test_data_loader, tensor_to_token,token_to_tensor,
         decoder_batch = torch.cat((start_tensor, decoder_batch), dim=1)
         decoder_batch = decoder_batch.cuda()
         with torch.no_grad():  # Disable gradient tracking for inference
-            predictions = torch.round(model_gpu(input_data, decoder_batch))
+            for i in range(10):
+                old_batch = decoder_batch
+                decoder_batch = torch.round(model_gpu(input_data, decoder_batch))
+                if(old_batch == decoder_batch):
+                    print(i)
+                    break;
 
         for i in range(b_size):
             target_dec = decode_sequence(target_batch[i], tensor_to_token)
-            pred_dec = decode_sequence(predictions[i], tensor_to_token)
+            pred_dec = decode_sequence(decoder_batch[i], tensor_to_token)
             bits_per_batch = bits_per_batch + string_similarity(target_dec[:-8], pred_dec[:-8])
         accuracy_per_batch = bits_per_batch / b_size
         overall_accuracy = overall_accuracy + accuracy_per_batch

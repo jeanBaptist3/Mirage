@@ -37,22 +37,23 @@ def main(iterations,new_data):
     """
     batch_size = 32
     bytes_per_token = 1
-    embedding_dim = 32
-    """max_input_length = encoder_blocks * 64 + 8 + 1
-    max_t_length = decoder_blocks * 64  + 1"""
-    max_input_length = 3
-    max_t_length = 2
-    num_encoder_layers = 1
-    nhead = 8  # Number of attention heads
-    num_decoder_layers = 1
+    embedding_dim = 256
+    max_input_length = encoder_blocks * 64 + 8 + 1
+    max_t_length = decoder_blocks * 64  + 1
+
+    num_encoder_layers = 2
+    nhead = 16  # Number of attention heads
+    num_decoder_layers = 2
     num_epochs = 15
-    optimizer = "ASGD"
+    loss_fn = nn.MSELoss()  # MSE Loss, since BCE was not so good
+    optimizer = "RMSprop"
+    learning_rate = 0.001
 
     """
     This section contains the variables concerned with saving the model, logs and data
     """	
     model_name = "ModelTest"
-    full_name = "mirage" + model_name + optimizer + f'{encoder_blocks}_{iterations}'
+    full_name = "mirageMSE" + model_name + optimizer + f'{encoder_blocks}_{iterations}'
     model_logs = "model/logs/" + datetime.datetime.now().strftime("%Y%m%d") + model_name+ optimizer + "Iteration:" + str(iterations)
     path_model = f"model/dim{embedding_dim}/{full_name}{train_size}.pth "
     data_path = f"data/{train_size}data_dump.csv"
@@ -68,18 +69,18 @@ def main(iterations,new_data):
                                        num_decoder_layers, batch_size, output_dim, nhead, mask)
     model_gpu = model_gpu.cuda()
     print("created model")
-    loss_fn = nn.BCELoss()  # BCELoss for binary prediction
-    optimizer = optim.ASGD(model_gpu.parameters(), lr=0.005)
+
+    optimizer = optim.RMSprop(model_gpu.parameters(), lr=learning_rate)
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print(device)
 
     full_size = train_size + test_size + val_size
     #creating the examples with a new key or using the old ones
     if new_data:
-        """dataCreation.create_data(generated_blocks=encoder_blocks, prediction_blocks=decoder_blocks,
+        dataCreation.create_data(generated_blocks=encoder_blocks, prediction_blocks=decoder_blocks,
                                  bytes_per_token=bytes_per_token, train_size=train_size, test_size=test_size,
-                                 val_size=val_size, path=data_path,start_token=start_token,end_token=end_token)"""
-        tD.xoRand(full_size=full_size,path=data_path,start_token=start_token,end_token=end_token)
+                                 val_size=val_size, path=data_path,start_token=start_token,end_token=end_token)
+        #tD.xoRand(full_size=full_size,path=data_path,start_token=start_token,end_token=end_token)
         print("Data Creation Complete")
 
 

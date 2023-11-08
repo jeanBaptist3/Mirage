@@ -37,7 +37,6 @@ class DecoderLayer(nn.Module):
         self.linear2 = nn.Linear(d_model, d_model)
         self.norm1 = nn.LayerNorm(d_model)
         self.norm2 = nn.LayerNorm(d_model)
-        self.norm3 = nn.LayerNorm(d_model)
         self.dropout = nn.Dropout(0.1)
         self.batch_size= batch_size
         self.max_target_length= max_target_length
@@ -72,7 +71,6 @@ class DecoderLayer(nn.Module):
         # Feed-forward layer
         ff_output = self.linear2(self.dropout(torch.relu(self.linear1(x))))
         x = x + ff_output
-        x = self.norm3(x)
 
         return x
 
@@ -141,10 +139,10 @@ class TransformerModel(nn.Module):
             #print("encoder outputs:" + str(input.size()))
             #print(input)
 
-        encoder_output = torch.empty([self.batch_size,self.max_target_length,self.embedding_dim]).cuda()
+        encoder_output = input_pos
         #print(encoder_output.size())
-        for i in range(self.batch_size):
-          encoder_output[i] = torch.transpose(self.linear(torch.transpose(input_pos[i],0,1)),0,1)
+        """for i in range(self.batch_size):
+          encoder_output[i] = torch.transpose(self.linear(torch.transpose(input_pos[i],0,1)),0,1)"""
          # Apply the decoder layers with the target_mask and input as context
 
         #print(encoder_output.device)

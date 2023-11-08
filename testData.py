@@ -33,7 +33,12 @@ def xoRand(full_size,path,start_token,end_token):
         print("source two = " + str(format(binary_source_two, '08b')))
         print(source_two)
         print(format(binary_source_one^binary_source_two,'08b'))
-        data.append((start_token+","+source_one + "," + source_two, binary_to_hex(format(binary_source_one^binary_source_two, '08b')) + "," + end_token,"0"))
+        """if format(binary_source_two, '08b')[-1] == '1' :
+            data.append((start_token + "," + source_one + "," + source_two, "ff", "0"))
+        if format(binary_source_two, '08b')[-1] == '0' :
+            data.append((start_token + "," + source_one + "," + source_two, "00", "0"))"""
+        data.append((start_token + "," + source_one + "," + source_two, binary_to_hex(format(binary_source_one^binary_source_two,'08b')), "0"))
+
 
     header = ['source_sequence', 'target_sequence', 'decoder_sequence']
 
