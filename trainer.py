@@ -84,14 +84,14 @@ def evaluate_model(model_gpu, test_data_loader, tensor_to_token,token_to_tensor,
             start_tensor = token_to_tensor['<SOS>'].unsqueeze(0).unsqueeze(0).expand(target_batch.size(0), 1, -1)
         bits_per_batch = 0.
         input_data = input_batch.cuda()
-        decoder_batch = target_batch[:, :-1, :]
+        decoder_batch = torch.zeros_like(target_batch[:, :-1, :])
         decoder_batch = torch.cat((start_tensor, decoder_batch), dim=1)
         decoder_batch = decoder_batch.cuda()
         with torch.no_grad():  # Disable gradient tracking for inference
-            for i in range(10):
+            for i in range(64):
                 old_batch = decoder_batch
                 decoder_batch = torch.round(model_gpu(input_data, decoder_batch))
-                if(old_batch == decoder_batch):
+                if False not in torch.eq(old_batch,decoder_batch):
                     print(i)
                     break;
 
@@ -102,7 +102,7 @@ def evaluate_model(model_gpu, test_data_loader, tensor_to_token,token_to_tensor,
         accuracy_per_batch = bits_per_batch / b_size
         overall_accuracy = overall_accuracy + accuracy_per_batch
         batch_idx = batch_idx + 1
-        evaluation_dataset.append((batch_idx, accuracy_per_batch))
+        evaluation_dataset.append((batch_idx, accuracy_per_batch,decode_sequence(decoder_batch[-1],tensor_to_token)[:200]))
 
     evaluation_dataset.append(("all", overall_accuracy / (batch_idx - 1)))
 

@@ -29,13 +29,13 @@ def main(iterations,new_data):
     test_size = 1024
     val_size = 1024
     full_size = train_size+test_size+val_size
-    encoder_blocks = 2
+    encoder_blocks = 4
     decoder_blocks = 1
 
     """
     This section contains the variables you can choose to train the model with:
     """
-    batch_size = 32
+    batch_size = 64
     bytes_per_token = 1
     embedding_dim = 256
     max_input_length = encoder_blocks * 64 + 8 + 1
@@ -47,12 +47,12 @@ def main(iterations,new_data):
     num_epochs = 15
     loss_fn = nn.MSELoss()  # MSE Loss, since BCE was not so good
     optimizer = "RMSprop"
-    learning_rate = 0.001
+    learning_rate = 0.0001
 
     """
     This section contains the variables concerned with saving the model, logs and data
     """	
-    model_name = "ModelTest"
+    model_name = "decoderTest-3"
     full_name = "mirageMSE" + model_name + optimizer + f'{encoder_blocks}_{iterations}'
     model_logs = "model/logs/" + datetime.datetime.now().strftime("%Y%m%d") + model_name+ optimizer + "Iteration:" + str(iterations)
     path_model = f"model/dim{embedding_dim}/{full_name}{train_size}.pth "
@@ -101,7 +101,7 @@ def main(iterations,new_data):
                                   test_data_loader, path_model,token_to_tensor=token_to_tensor,writer=writer,iteration=iterations)
     results = trainer.evaluate_model(model_gpu=model_trained, test_data_loader=test_data_loader,
                                      tensor_to_token=tensor_to_token,token_to_tensor=token_to_tensor, b_size=batch_size,summary_writer=writer)
-    header = ['batch index', 'accuracy in batch']
+    header = ['batch index', 'accuracy in batch','test']
 
     with open(f'results/{full_name}_accuracy', 'w', encoding='UTF8', newline='') as fp:
         writer = csv.writer(fp)
