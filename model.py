@@ -155,4 +155,20 @@ class TransformerModel(nn.Module):
         out = self.output_linear(target_pos)
         return torch.sigmoid(torch.mul(out,10))
 
+    def encode(self, x):
+        input = self.input_linear(x)
+        input = self.input_position_encoder(input)
 
+        for layer in self.encoder_layers:
+            input = layer(input)
+
+        return input
+
+    def decode(self,encoder_output,decoder_input):
+        target = self.input_linear(decoder_input)
+        target = self.target_position_encoder(target)
+        for layer in self.decoder_layers:
+            target = layer(target,encoder_output)
+
+        out = self.output_linear(target)
+        return torch.sigmoid(torch.mul(out,10))

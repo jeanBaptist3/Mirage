@@ -84,16 +84,14 @@ def evaluate_model(model_gpu, test_data_loader, tensor_to_token,token_to_tensor,
             start_tensor = token_to_tensor['<SOS>'].unsqueeze(0).unsqueeze(0).expand(target_batch.size(0), 1, -1)
         bits_per_batch = 0.
         input_data = input_batch.cuda()
+        input_data = model_gpu.encode(input_data)
         decoder_batch = torch.zeros_like(target_batch[:, :-1, :])
         decoder_batch = torch.cat((start_tensor, decoder_batch), dim=1)
-        decoder_batch = decoder_batch.cuda()
+        decoder_inp = decoder_batch.cuda()
         with torch.no_grad():  # Disable gradient tracking for inference
             for i in range(64):
-                old_batch = decoder_batch
-                decoder_batch = torch.round(model_gpu(input_data, decoder_batch))
-                if False not in torch.eq(old_batch,decoder_batch):
-                    print(i)
-                    break;
+                decoder_batch[:,i+1,:] = torch.round(model_gpu.decode(input_data,decoder_batch))[:,i,:]
+
 
         for i in range(b_size):
             target_dec = decode_sequence(target_batch[i], tensor_to_token)
